@@ -24,6 +24,26 @@ function showTrips(){
 
 showTrips()
 
-function byTickites(){
-    
+function buyTickets(name,id){
+    if(!checkTrip(id)){
+        return "Trajet introuvable."
+    }
+
 }
+
+function checkTrip(id){
+    for(let i=0;i<trips.length;i++){
+        if(trips[i].id == id){
+            return true
+        }
+    }
+    return false
+}
+// function checkAvaliablSeats(){
+//     for(let i=0;i<trips.length;i++){
+//         if(trips[i].id == id){
+//             return true
+//         }
+//     }
+//     return false
+// }
