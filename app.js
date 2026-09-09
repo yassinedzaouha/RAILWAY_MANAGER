@@ -25,5 +25,5 @@ function showTrips(){
 showTrips()
 
 function byTickites(){
-
+    
 }
