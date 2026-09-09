@@ -94,6 +94,21 @@ function searchTicket(name){
   showTickets(searchedTickets)
 }
 
+function filterTrips(city){
+  console.log(`=== les traject de ${city} ===`)
+  let checkcity = false
+  for(let trip of trips){
+    if(trip.departure.toLowerCase() == city.toLowerCase()){
+      console.log(`${trip.departure} ==> ${trip.destination} : ${trip.price}`)
+      checkcity = true
+    }
+  }
+  if(!checkcity){
+    console.log("city intouvable")
+  }
+}
+
+
 
 function checkAvailableSeats(id) {
   let trip = getTrip(id);
@@ -145,16 +160,12 @@ function getTicket(id) {
 
 function chekFunc(){
   let a = prompt("donner nom:")
-
   let b = prompt("donner id:")
   buyTickets(a,b)
 
 }
 
  
-chekFunc()
-chekFunc()
-chekFunc()
-showTickets(tickets)
+
 let del = prompt("donner id delet :")
-searchTicket(del)
+filterTrips(del)
