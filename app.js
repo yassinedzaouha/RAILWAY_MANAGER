@@ -43,7 +43,7 @@ function buyTickets(name,id) {
 
 }
 
-function showTickets() {
+function showTickets(tickets) {
   let ticket;
   if(!tickets.length){
     console.log("Aucun ticket enregistré.")
@@ -65,13 +65,34 @@ function showTickets() {
 }
 
 function deleteTickets(ticketId){
-  let ticket = getTicket()
+  let ticket = getTicket(ticketId)
   if(!ticket){
-    return "Aucun ticket enregistré."
+    return "Aucun ticket enregistré.";
   }
-  
+  let index = tickets.indexOf(ticket)
+
+  for(let i=0; i<trips.length; i++){
+    if(trips[i].id == ticket.tripId) {
+      trips[i].availableSeats = trips[i].availableSeats + 1;
+      console.log(trips[i].availableSeats)
+      break;
+    } 
+  }
+
+  tickets.splice(index,1)
+
+  return "Ticket annulé avec succès.";
 }
 
+function searchTicket(name){
+  let searchedTickets = []
+  for(let i=0; i<tickets.length; i++){
+    if(tickets[i].passengerName == name){
+      searchedTickets.push(tickets[i])
+    }
+  }
+  showTickets(searchedTickets)
+}
 
 
 function checkAvailableSeats(id) {
@@ -100,6 +121,10 @@ function decreaseAvailableSeats(trip) {
   trip.availableSeats -= 1;
 }
 
+// function increaseAvailableSeats(id) {
+
+// }
+
 function getTrip(id) {
   for (let i = 0; i < trips.length; i++) {
     if (trips[i].id == id) {
@@ -115,17 +140,8 @@ function getTicket(id) {
       return tickets[i];
     }
   }
-  return false
+  return false;
 }
-
-// function checkTrip(id){
-//     for(let i=0;i<trips.length;i++){
-//         if(trips[i].id == id){
-//             return true
-//         }
-//     }
-//     return false
-// }
 
 function chekFunc(){
   let a = prompt("donner nom:")
@@ -134,8 +150,11 @@ function chekFunc(){
   buyTickets(a,b)
 
 }
+
+ 
 chekFunc()
 chekFunc()
 chekFunc()
-chekFunc()
-showTickets()
+showTickets(tickets)
+let del = prompt("donner id delet :")
+searchTicket(del)
