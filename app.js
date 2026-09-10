@@ -141,11 +141,12 @@ function buyTickets(name, id) {
   let trip = getTrip(id);
   if (!trip) {
     console.log("Trajet introuvable.");
+    return;
   }
   if (!checkAvailableSeats(id)) {
     console.log("Train complet.");
+    return;
   }
-
   let ticket = {
     id: ticketId++,
     passengerName: name,
@@ -162,16 +163,18 @@ function showTickets(tickets) {
   let ticket;
   if (!tickets.length) {
     console.log("Aucun ticket enregistré.");
-    return null;
+    return;
   }
   console.log("\n\n            === TICKETES DISPONIBLES ===");
   for (let i = 0; i < tickets.length; i++) {
     ticket = tickets[i];
+    let departure = trips.find(trip => trip.id == ticket.tripId).departure
+    let destination = trips.find(trip => trip.id == ticket.tripId).destination
     console.log(`
             Ticket #${ticket.id}  
             ━━━━━━━━━━━━━━━━━━━━
             Passager : ${ticket.passengerName}
-            Trajet :  ${ticket.tripId}
+            Trajet :  ${departure} -> ${destination}
             Place : ${ticket.seatNumber}
             Price : ${ticket.price} DH
             ━━━━━━━━━━━━━━━━━━━━
@@ -184,27 +187,24 @@ function cancelTicket(ticketId) {
   let ticket = getTicket(ticketId);
   if (!ticket) {
     console.log("Aucun ticket enregistré by id", ticketId);
-  }
-  let index = tickets.indexOf(ticket);
-
-  for (let i = 0; i < trips.length; i++) {
-    if (trips[i].id == ticket.tripId) {
-      trips[i].availableSeats = trips[i].availableSeats + 1;
-      break;
-    }
+    return;
   }
 
+  let index = tickets.findIndex(e => e.tripId === ticket.tripId);
   tickets.splice(index, 1);
 
-  console.log("Ticket annulé avec succès.");
+  let trip = getTrip(ticket.tripId)
+  trip.availableSeats++
+
+  console.log("\nTicket annulé avec succès.");
 }
 
 // Search for a ticket
 function searchTicket(name) {
   let searchedTickets = [];
-  for (let i = 0; i < tickets.length; i++) {
-    if (tickets[i].passengerName == name) {
-      searchedTickets.push(tickets[i]);
+  for (let ticket of tickets) {
+    if (ticket.passengerName.toLowerCase() == name.toLowerCase()) {
+      searchedTickets.push(ticket);
     }
   }
   if (!searchedTickets.length) {
@@ -235,7 +235,7 @@ function filterTrips(city) {
 function tripSort() {
   let val;
   for (let j = 0; j < trips.length; j++) {
-    for (let i = 0; i < trips.length - 1; i++) {
+    for (let i = 0; i < trips.length - i - 1; i++) {
       if (trips[i].price > trips[i + 1].price) {
         val = trips[i];
         trips[i] = trips[i + 1];
@@ -306,7 +306,9 @@ function checkAvailableSeats(id) {
 
 function assignSeatNumber(id) {
   let isAvailable;
-  for (let i = 1; i <= 50; i++) {
+  let mySeatNumber = 0
+  let i = 1
+  while(!mySeatNumber) {
     isAvailable = true;
     for (let j = 0; j < tickets.length; j++) {
       if (tickets[j].tripId == id && tickets[j].seatNumber == i) {
@@ -315,9 +317,11 @@ function assignSeatNumber(id) {
       }
     }
     if (isAvailable) {
-      return i;
+      mySeatNumber =  i
     }
+    i++;
   }
+  return mySeatNumber;
 }
 
 function decreaseAvailableSeats(trip) {
